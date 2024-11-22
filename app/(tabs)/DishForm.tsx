@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Picker, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Picker, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 interface Dish {
@@ -15,13 +15,23 @@ const DishForm: React.FC = () => {
   const [description, setDescription] = useState('');
   const [course, setCourse] = useState('');
   const [price, setPrice] = useState('');
+  const [error, setError] = useState(''); // State to store error messages
   const navigation = useNavigation();
   const route = useRoute();
 
   // Function to handle adding the new dish
   const handleAddDish = () => {
-    if (!name || !description || !course || !price || isNaN(parseFloat(price))) {
-      alert('Please fill in all fields with valid values');
+    // Clear any previous error messages
+    setError('');
+
+    // Validate inputs
+    if (!name || !description || !course || !price) {
+      setError('All fields are required!');
+      return;
+    }
+
+    if (isNaN(parseFloat(price))) {
+      setError('Price must be a valid number!');
       return;
     }
 
@@ -33,6 +43,7 @@ const DishForm: React.FC = () => {
       price: parseFloat(price),
     };
 
+    // Add dish to ChefScreen or UserScreen based on params
     if (route.params?.addToChefScreen) {
       route.params.addToChefScreen(newDish);
     }
@@ -89,25 +100,28 @@ const DishForm: React.FC = () => {
         keyboardType="numeric"
       />
 
+      {/* Error Message */}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
       {/* Add Dish Button */}
       <TouchableOpacity style={styles.button} onPress={handleAddDish}>
         <Text style={styles.buttonText}>Add Dish</Text>
       </TouchableOpacity>
 
       {/* Navigate Back to ChefScreen */}
-     <TouchableOpacity
-      style={[styles.button, styles.backButton]}
-      onPress={() => {
-     // Check if ChefScreen exists in the route params
-      if (route.params?.navigateToChefScreen) {
-      navigation.navigate('ChefScreen'); // Explicitly navigate to ChefScreen
-       } else {
-      navigation.goBack(); // Default back navigation
-      }
-     }}
->
-  <Text style={styles.buttonText}>Go Back</Text>
-</TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.button, styles.backButton]}
+        onPress={() => {
+          // Check if ChefScreen exists in the route params
+          if (route.params?.navigateToChefScreen) {
+            navigation.navigate('ChefScreen'); // Explicitly navigate to ChefScreen
+          } else {
+            navigation.goBack(); // Default back navigation
+          }
+        }}
+      >
+        <Text style={styles.buttonText}>Go Back</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -159,6 +173,12 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: '#FF0000',
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
 
