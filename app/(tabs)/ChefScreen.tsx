@@ -16,13 +16,10 @@ const ChefScreen: React.FC = () => {
     { id: '1', name: 'Spaghetti Bolognese', description: 'A classic Italian pasta dish with rich tomato and beef sauce.', course: 'Main', price: 85.50 },
     { id: '2', name: 'Caesar Salad', description: 'Crispy romaine lettuce with Caesar dressing, croutons, and Parmesan cheese.', course: 'Starter', price: 45.00 },
     { id: '3', name: 'Chicken Curry', description: 'Spicy chicken curry with rice and naan bread.', course: 'Main', price: 95.00 },
-    { id: '4', name: 'Fish and Chips', description: 'Crispy battered fish with fries and tartar sauce.', course: 'Main', price: 70.00 },
-    { id: '5', name: 'Chocolate Cake', description: 'Rich and moist chocolate cake topped with creamy icing.', course: 'Dessert', price: 40.00 },
-    { id: '6', name: 'Tomato Soup', description: 'Warm and hearty tomato soup served with fresh bread.', course: 'Starter', price: 35.00 },
-    { id: '7', name: 'Grilled Steak', description: 'Perfectly grilled steak served with mashed potatoes and veggies.', course: 'Main', price: 150.00 },
-    { id: '8', name: 'Margarita Pizza', description: 'Classic pizza topped with mozzarella cheese, tomatoes, and basil.', course: 'Main', price: 75.00 },
-    { id: '9', name: 'Lemon Meringue Pie', description: 'Tangy lemon filling topped with fluffy meringue, baked to perfection.', course: 'Dessert', price: 50.00 },
-    { id: '10', name: 'Prawn Cocktail', description: 'Chilled prawns served with a tangy cocktail sauce.', course: 'Starter', price: 60.00 },
+    { id: '4', name: 'Chocolate Cake', description: 'Rich and moist chocolate cake topped with creamy icing.', course: 'Dessert', price: 40.00 },
+    { id: '5', name: 'Tomato Soup', description: 'Warm and hearty tomato soup served with fresh bread.', course: 'Starter', price: 35.00 },
+    { id: '6', name: 'Lemon Meringue Pie', description: 'Tangy lemon filling topped with fluffy meringue, baked to perfection.', course: 'Dessert', price: 50.00 },
+    { id: '7', name: 'Prawn Cocktail', description: 'Chilled prawns served with a tangy cocktail sauce.', course: 'Starter', price: 60.00 },
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -80,7 +77,11 @@ const ChefScreen: React.FC = () => {
       {/* Add New Dish Button */}
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigation.navigate('DishForm')}
+        onPress={() =>
+          navigation.navigate('DishForm', {
+            addToChefScreen: (newDish: Dish) => setDishes((prevDishes) => [...prevDishes, newDish]),
+          })
+        }
       >
         <Icon name="add" size={20} color="#fff" />
         <Text style={styles.addButtonText}>Add New Dish</Text>
@@ -205,3 +206,4 @@ const styles = StyleSheet.create({
 });
 
 export default ChefScreen;
+
