@@ -95,12 +95,19 @@ const DishForm: React.FC = () => {
       </TouchableOpacity>
 
       {/* Navigate Back to ChefScreen */}
-      <TouchableOpacity
-        style={[styles.button, styles.backButton]}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.buttonText}>Go Back</Text>
-      </TouchableOpacity>
+     <TouchableOpacity
+      style={[styles.button, styles.backButton]}
+      onPress={() => {
+     // Check if ChefScreen exists in the route params
+      if (route.params?.navigateToChefScreen) {
+      navigation.navigate('ChefScreen'); // Explicitly navigate to ChefScreen
+       } else {
+      navigation.goBack(); // Default back navigation
+      }
+     }}
+>
+  <Text style={styles.buttonText}>Go Back</Text>
+</TouchableOpacity>
     </View>
   );
 };
