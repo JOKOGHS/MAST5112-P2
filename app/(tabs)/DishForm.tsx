@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Picker, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+interface Dish {
+  id: string;
+  name: string;
+  description: string;
+  course: string;
+  price: number;
+}
+
 const DishForm: React.FC = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -12,7 +20,7 @@ const DishForm: React.FC = () => {
 
   const handleAddDish = () => {
     if (name && description && course && price) {
-      const newDish = {
+      const newDish: Dish = {
         id: Math.random().toString(),
         name,
         description,
@@ -20,17 +28,24 @@ const DishForm: React.FC = () => {
         price: parseFloat(price),
       };
 
-      // Pass the new dish back to the index
-      route.params?.addDish(newDish);
+      // Call the addDish function passed from Index
+      if (route.params?.addDish) {
+        route.params.addDish(newDish);
+      }
 
-      // Clear input fields after submission
+      // Clear input fields and navigate back
       setName('');
       setDescription('');
       setCourse('');
       setPrice('');
-
-      navigation.goBack(); // Navigate back to the dish list
+      navigation.goBack();
+    } else {
+      alert('Please fill in all fields');
     }
+  };
+
+  const navigateToChefScreen = () => {
+    navigation.navigate('ChefScreen');
   };
 
   return (
@@ -71,8 +86,12 @@ const DishForm: React.FC = () => {
         keyboardType="numeric"
       />
 
-      {/* Button to Add Dish */}
       <Button title="Add Dish" onPress={handleAddDish} />
+
+      {/* Button to navigate to ChefScreen */}
+      <View style={{ marginTop: 10 }}>
+        <Button title="Go to Chef Screen" onPress={navigateToChefScreen} />
+      </View>
     </View>
   );
 };
@@ -81,21 +100,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFDAB9', // Light peach color
+    backgroundColor: '#FFDAB9',
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    fontFamily: 'Harlow Solid Italic', // Harlow Solid Italic font for the heading
-    color: '#000', // Optional text color
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    fontFamily: 'Harlow Solid Italic', // Harlow Solid Italic font for labels
-    color: '#000', // Optional text color
+    fontFamily: 'Harlow Solid Italic',
   },
   input: {
     borderWidth: 1,
@@ -104,13 +116,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 5,
     backgroundColor: '#f9f9f9',
-    fontFamily: 'Harlow Solid Italic', // Harlow Solid Italic font for inputs
   },
   picker: {
     height: 50,
     width: '100%',
     marginBottom: 15,
-    fontFamily: 'Harlow Solid Italic', // Harlow Solid Italic font for picker items
   },
 });
+
 export default DishForm;
