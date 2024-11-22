@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Index: React.FC = () => {
@@ -10,16 +10,20 @@ const Index: React.FC = () => {
       <Text style={styles.heading}>Choose Your Role</Text>
 
       {/* Button to navigate to ChefScreen */}
-      <Button
-        title="Chef Menu"
+      <TouchableOpacity
+        style={[styles.button, styles.chefButton]}
         onPress={() => navigation.navigate('ChefScreen')}
-      />
+      >
+        <Text style={styles.buttonText}>Chef Menu</Text>
+      </TouchableOpacity>
 
       {/* Button to navigate to UserScreen */}
-      <Button
-        title="User Menu"
+      <TouchableOpacity
+        style={[styles.button, styles.userButton]}
         onPress={() => navigation.navigate('UserScreen')}
-      />
+      >
+        <Text style={styles.buttonText}>User Menu</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -28,18 +32,39 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
-    backgroundColor: '#FFDAB9', // Light peach background
+    backgroundColor: '#FCE4EC', // Soft pink background
   },
   heading: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
-    fontFamily: 'Harlow Solid Italic',
-    color: '#000',
+    marginBottom: 40,
+    fontFamily: 'Roboto',
+    color: '#333',
     textAlign: 'center',
+    textTransform: 'uppercase',
+  },
+  button: {
+    width: '80%',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  chefButton: {
+    backgroundColor: '#8E24AA', // Purple for Chef
+  },
+  userButton: {
+    backgroundColor: '#FF4081', // Pink for User
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
 export default Index;
+
 

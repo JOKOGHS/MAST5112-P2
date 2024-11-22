@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons'; // Importing Ionicons from react-native-vector-icons
 
 interface Dish {
   id: string;
@@ -16,37 +25,36 @@ const UserScreen: React.FC = () => {
     { id: '3', name: 'Chocolate Cake', description: 'Rich and moist chocolate cake', course: 'Dessert', price: 50 },
     { id: '4', name: 'Beef Wellington', description: 'Tender beef wrapped in puff pastry', course: 'Main', price: 250 },
     { id: '5', name: 'Vegetable Stir-Fry', description: 'Stir-fried vegetables in soy sauce', course: 'Main', price: 80 },
-    { id: '6', name: 'Lemon Meringue Pie', description: 'Tangy lemon filling with meringue topping', course: 'Dessert', price: 60 },
-    { id: '7', name: 'Fish Tacos', description: 'Fish served with fresh toppings in a soft taco shell', course: 'Starter', price: 85 },
-    { id: '8', name: 'Cheeseburger', description: 'Juicy beef patty with cheese', course: 'Main', price: 100 },
-    { id: '9', name: 'Peking Duck', description: 'Crispy duck served with pancakes and hoisin sauce', course: 'Main', price: 220 },
-    { id: '10', name: 'Grilled Salmon', description: 'Salmon grilled to perfection', course: 'Main', price: 180 },
-    { id: '11', name: 'Pasta Primavera', description: 'Pasta with a variety of fresh vegetables', course: 'Main', price: 110 },
-    { id: '12', name: 'Vegetable Soup', description: 'A hearty vegetable soup', course: 'Starter', price: 70 },
-    { id: '13', name: 'Apple Pie', description: 'Traditional American dessert with apples', course: 'Dessert', price: 65 },
-    { id: '14', name: 'Eggplant Parmesan', description: 'Breaded eggplant baked with cheese', course: 'Main', price: 120 },
-    { id: '15', name: 'Chicken Tikka Masala', description: 'Spicy Indian curry with chicken', course: 'Main', price: 130 },
-    { id: '16', name: 'Crispy Calamari', description: 'Deep-fried squid served with dipping sauce', course: 'Starter', price: 95 },
-    { id: '17', name: 'Caprese Salad', description: 'Fresh mozzarella, tomatoes, and basil', course: 'Starter', price: 75 },
-    { id: '18', name: 'Tiramisu', description: 'Coffee-flavored Italian dessert with layers of cream', course: 'Dessert', price: 70 },
-    { id: '19', name: 'Lamb Chops', description: 'Grilled lamb chops with rosemary', course: 'Main', price: 200 },
-    { id: '20', name: 'Vegetable Samosas', description: 'Fried pastry filled with spiced vegetables', course: 'Starter', price: 50 }
+    { id: '6', name: 'Tomato Soup', description: 'Warm and hearty tomato soup served with fresh bread.', course: 'Starter', price: 35.00 },
+    { id: '7', name: 'Grilled Steak', description: 'Perfectly grilled steak served with mashed potatoes and veggies.', course: 'Main', price: 150.00 },
+    { id: '8', name: 'Margarita Pizza', description: 'Classic pizza topped with mozzarella cheese, tomatoes, and basil.', course: 'Main', price: 75.00 },
+    { id: '9', name: 'Lemon Meringue Pie', description: 'Tangy lemon filling topped with fluffy meringue, baked to perfection.', course: 'Dessert', price: 50.00 },
+    { id: '10', name: 'Prawn Cocktail', description: 'Chilled prawns served with a tangy cocktail sauce.', course: 'Starter', price: 60.00 },
   ]);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigation = useNavigation();
 
-  // Filter dishes based on search term (searching by name or course)
+  // Calculate the average price
+  const averagePrice =
+    dishes.length > 0
+      ? dishes.reduce((total, dish) => total + dish.price, 0) / dishes.length
+      : 0;
+
+  // Filter dishes based on search term
   const filteredDishes = dishes.filter(dish =>
     dish.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     dish.course.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  navigation.navigate('DishForm', {
-    addToUserScreen: (newDish) => setDishes([...dishes, newDish]),
-  });
-  
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Dish List</Text>
+      <Text style={styles.heading}>User Menu</Text>
+
+      {/* Average Price Section */}
+      <View style={styles.averagePriceContainer}>
+        <Text style={styles.averagePriceText}>Average Price:</Text>
+        <Text style={styles.averagePriceValue}>R{averagePrice.toFixed(2)}</Text>
+      </View>
 
       {/* Search Bar */}
       <TextInput
@@ -56,17 +64,28 @@ const UserScreen: React.FC = () => {
         onChangeText={setSearchTerm}
       />
 
-      {/* Display Filtered Dishes */}
+      {/* Dish List */}
       <FlatList
         data={filteredDishes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.dishItem}>
-            <Text style={styles.dishText}>{item.name} - {item.course} - R{item.price.toFixed(2)}</Text>
-            <Text>{item.description}</Text>
+          <View style={styles.dishCard}>
+            <Text style={styles.dishTitle}>{item.name}</Text>
+            <Text style={styles.dishDetails}>
+              {item.course} - R{item.price.toFixed(2)}
+            </Text>
+            <Text style={styles.dishDescription}>{item.description}</Text>
           </View>
         )}
       />
+
+      {/* Go Back Button with Icon */}
+      <TouchableOpacity
+        style={styles.iconButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="home" size={30} color="#FFF" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -74,33 +93,79 @@ const UserScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#FFDAB9', // Light peach color
+    backgroundColor: '#FAF3E0',
+    padding: 15,
   },
   heading: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 15,
+    color: '#4A4A4A',
     textAlign: 'center',
-    fontFamily: 'Harlow Solid Italic', // Harlow Solid Italic font for the heading
+  },
+  averagePriceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 15,
+    elevation: 2,
+  },
+  averagePriceText: {
+    fontSize: 18,
+    color: '#333',
+  },
+  averagePriceValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#007BFF',
   },
   searchBar: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
     padding: 10,
     marginBottom: 15,
-    borderRadius: 5,
+    backgroundColor: '#FFF',
+    fontSize: 16,
   },
-  dishItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  dishCard: {
+    backgroundColor: '#FFF',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+    elevation: 2,
   },
-  dishText: {
-    fontSize: 18,
-    fontFamily: 'Harlow Solid Italic', // Harlow Solid Italic font for the dish items
-    color: '#000',
+  dishTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4A4A4A',
+    marginBottom: 5,
+  },
+  dishDetails: {
+    fontSize: 16,
+    color: '#777',
+    marginBottom: 10,
+  },
+  dishDescription: {
+    fontSize: 14,
+    color: '#555',
+  },
+  iconButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 20,
+    width: 60,
+    height: 60,
   },
 });
 
 export default UserScreen;
+
+
